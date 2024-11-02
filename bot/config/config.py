@@ -15,7 +15,7 @@ class Settings(BaseSettings):
 
     DELAY_EACH_ACCOUNT: list[int] = [20, 30]
     IGNORE_TASKS: list[str] = ["telegram"]
-    ADVANCED_ANTI_DETECTION: bool = True
+    ADVANCED_ANTI_DETECTION: bool = False
 
     USE_PROXY_FROM_FILE: bool = False
 
