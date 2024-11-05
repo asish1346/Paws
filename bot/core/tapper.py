@@ -52,7 +52,7 @@ class Tapper:
     async def get_tg_web_data(self, proxy: str | None) -> str:
         try:
             if settings.REF_LINK == '':
-                ref_param = "sc9bGaHz"
+                ref_param = "mrG2me3a"
             else:
                 ref_param = settings.REF_LINK.split('=')[1]
         except:
@@ -117,8 +117,39 @@ class Tapper:
                          f"{error}")
             await asyncio.sleep(delay=3)
 
+    async def add_icon(self):
+        try:
+            if not self.tg_client.is_connected:
+                await self.tg_client.connect()
 
-    async def join_channel(self):
+            me = await self.tg_client.get_me()
+            name = randint(1, 2)
+            if "▪️" not in f"{str(me.first_name)} {str(me.last_name)}":
+                if name == 1:
+                    if me.first_name is not None:
+                        new_display_name = f"{me.first_name} 🐾"
+                    else:
+                        new_display_name = "▪️"
+                    await self.tg_client.update_profile(first_name=new_display_name)
+                else:
+                    if me.last_name is not None:
+                        new_display_name = f"{me.last_name} 🐾"
+                    else:
+                        new_display_name = "▪️"
+                    await self.tg_client.update_profile(last_name=new_display_name)
+                logger.success(f"{self.session_name} | 🟩 Display name updated to: {new_display_name}")
+
+            if self.tg_client.is_connected:
+                await self.tg_client.disconnect()
+
+        except Exception as error:
+            if self.tg_client.is_connected:
+                await self.tg_client.disconnect()
+            logger.error(f"{self.session_name} | 🟥 Error while changing username: {error}")
+            await asyncio.sleep(delay=3)
+
+
+    async def join_channel(self, channel_link):
         try:
             logger.info(f"{self.session_name} | Joining TG channel...")
             if not self.tg_client.is_connected:
@@ -127,7 +158,7 @@ class Tapper:
                 except (Unauthorized, UserDeactivated, AuthKeyUnregistered):
                     raise InvalidSession(self.session_name)
             try:
-                await self.tg_client.join_chat("pawsupfam")
+                await self.tg_client.join_chat(channel_link)
                 logger.success(f"{self.session_name} | <green>Joined channel successfully</green>")
             except Exception as e:
                 logger.error(f"{self.session_name} | <red>Join TG channel failed - Error: {e}</red>")
@@ -356,7 +387,6 @@ class Tapper:
                                 logger.info(f"{self.session_name} | Starting to connect with wallet <cyan>{self.wallet}</cyan>")
                                 a = await self.bind_wallet(session)
                                 if a:
-                                    self.wallet_connected = True
                                     logger.success(f"{self.session_name} | <green>Successfully bind with wallet: <cyan>{self.wallet}</cyan></green>")
                                     with open('used_wallets.json', 'r') as file:
                                         wallets = json.load(file)
@@ -366,6 +396,7 @@ class Tapper:
                                             "used_for": self.session_name
                                         }
                                     })
+                                    self.wallet_connected = True
                                     with open('used_wallets.json', 'w') as file:
                                         json.dump(wallets, file, indent=4)
                                 else:
@@ -386,7 +417,14 @@ class Tapper:
                                         continue
                                     if task['progress']['claimed'] is False:
                                         if task['code'] == "telegram":
-                                            await self.join_channel()
+                                            if task['code'] == "emojiName":
+                                                await self.add_icon()
+                                                await asyncio.sleep(random.randint(1,4))
+                                            if task['code'] == "blum":
+                                                await self.join_channel("blumcrypto")
+                                            elif task['code'] == "telegram":
+                                                channel = task['data'].split("/")[3]
+                                                await self.join_channel(channel)
                                             await self.proceed_task(task, session, 3, 3)
                                         else:
                                             await self.proceed_task(task, session, 5, 5)
