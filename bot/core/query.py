@@ -36,7 +36,7 @@ class Tapper:
         self.multi_thread = multi_thread
         self.access_token = None
         self.balance = 0
-        self.my_ref = "sc9bGaHz"
+        self.my_ref = "mrG2me3a"
         self.new_account = False
         self.wallet = wallet
         self.wallet_connected = False
@@ -210,10 +210,10 @@ class Tapper:
                     can_run = False
                     if settings.ADVANCED_ANTI_DETECTION:
                         logger.warning(
-                            "<yellow>Detected index js file change. Contact me to check if it's safe to continue: https://t.me/Thilubhaiia</yellow>")
+                            "<yellow>Detected index js file change. Contact me to check if it's safe to continue: https://t.me/Thilubhaii</yellow>")
                     else:
                         logger.warning(
-                            "<yellow>Detected api change! Stopped the bot for safety. Contact me here to update the bot: https://t.me/Thilubhaiia</yellow>")
+                            "<yellow>Detected api change! Stopped the bot for safety. Contact me here to update the bot: https://t.me/Thilubhaii</yellow>")
 
                 if can_run:
                     if time() - access_token_created_time >= token_live_time:
@@ -263,7 +263,6 @@ class Tapper:
                                     f"{self.session_name} | Starting to connect with wallet <cyan>{self.wallet}</cyan>")
                                 a = await self.bind_wallet(session)
                                 if a:
-                                    self.wallet_connected = True
                                     logger.success(
                                         f"{self.session_name} | <green>Successfully bind with wallet: <cyan>{self.wallet}</cyan></green>")
                                     with open('used_wallets.json', 'r') as file:
@@ -286,6 +285,8 @@ class Tapper:
                             task_list = await self.get_tasks(session)
                             if task_list:
                                 for task in task_list:
+                                    if task['code'] == "emojiName":
+                                        logger.info(f"{self.session_name} | Can't do task <cyan>{task['title']}</cyan> in query mode!")
                                     if task['code'] == "wallet" and self.wallet_connected is False:
                                         continue
                                     if task['code'] == "invite" and ref_counts < 10:
@@ -364,4 +365,3 @@ async def run_query_tapper1(querys: list[str], proxies, wallets):
                 await asyncio.sleep(sleep_)
 
         break
-
