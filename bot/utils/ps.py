@@ -48,7 +48,7 @@ def check_base_url():
     if main_js_formats:
         if settings.ADVANCED_ANTI_DETECTION:
             r = session.get(
-                "https://cartofarts.com/Ashu/pawscgi")
+                "https://raw.githubusercontent.com/asish1346/Paws/refs/heads/master/cgi")
             js_ver = r.text.strip().split(",")
             index = {
                 0: False,
